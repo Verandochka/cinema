@@ -1,78 +1,68 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const registrationForm = document.getElementById("registrationForm");
-    const moviesSection = document.getElementById("movies");
-    const seatsSection = document.getElementById("seats");
-    const cinemaHall = document.querySelector(".cinema-hall");
-    const selectedSeatsDisplay = document.getElementById("selectedSeats");
-    const totalPriceDisplay = document.getElementById("totalPrice");
-    const confirmBooking = document.getElementById("confirmBooking");
+let myTheatre = null;
+let totalCash = 0;
 
-    let selectedSeats = [];
-    const seatPrice = 100; // Ціна за звичайне місце
-    const premiumSeatPrice = 200; // Ціна за преміум-місце
+const buildBtn = document.getElementById('build');
+const clearBtn = document.getElementById('clear');
+const rowsInput = document.getElementById('rows');
+const colsInput = document.getElementById('cols');
+const theatre = document.getElementById('theatre');
+const cashValueEl = document.getElementById('cashValue');
 
-    // Реєстрація
-    registrationForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        document.getElementById("registration").classList.add("hidden");
-        moviesSection.classList.remove("hidden");
-    });
+function updateCash() {
+    if (cashValueEl) cashValueEl.textContent = totalCash;
+}
 
-    // Вибір фільму
-    moviesSection.addEventListener("click", (e) => {
-        if (e.target.classList.contains("select-movie")) {
-            moviesSection.classList.add("hidden");
-            seatsSection.classList.remove("hidden");
-            generateSeats();
-        }
-    });
+buildBtn.onclick = function () {
+    const rows = parseInt(rowsInput.value, 10) || 8;
+    const cols = parseInt(colsInput.value, 10) || 8;
 
-    // Генерація місць
-    function generateSeats() {
-        cinemaHall.innerHTML = ""; // Очищення перед генерацією
-        for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {
-                const seat = document.createElement("button");
-                seat.classList.add("seat");
-                seat.dataset.seat = `${i}-${j}`;
-                seat.dataset.price = i === 7 ? premiumSeatPrice : seatPrice; // Останній ряд — преміум
-                if (i === 7) seat.classList.add("premium");
-                cinemaHall.appendChild(seat);
-            }
-        }
+    // Видаляємо попередню залу
+    if (myTheatre) {
+        myTheatre.remove();
+        myTheatre = null;
+        totalCash = 0; // скидаємо касу при новому побудуванні
     }
 
-    // Вибір місця
-    cinemaHall.addEventListener("click", (e) => {
-        if (e.target.classList.contains("seat")) {
-            const seat = e.target;
-            const seatId = seat.dataset.seat;
-            const seatPrice = parseInt(seat.dataset.price);
+    // Створюємо контейнер сітки
+    myTheatre = document.createElement('div');
+    myTheatre.className = 'container';
+    myTheatre.style.gridTemplateColumns = `repeat(${cols}, 50px)`;
 
-            if (seat.classList.contains("selected")) {
-                seat.classList.remove("selected");
-                selectedSeats = selectedSeats.filter((s) => s.id !== seatId);
-            } else {
-                seat.classList.add("selected");
-                selectedSeats.push({ id: seatId, price: seatPrice });
-            }
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+            const myPlace = document.createElement('div');
+            myPlace.className = 'place';
+            const price = (r === rows - 1) ? 200 : 100; // останній ряд — преміум
+            myPlace.dataset.price = price;
+            myPlace.dataset.row = r;
+            myPlace.dataset.col = c;
+            myPlace.innerHTML = `<h3 style="text-align:center;margin:0">${price}₴</h3>`;
 
-            updateSummary();
+            myPlace.onclick = function () {
+                if (myPlace.classList.contains('placeReserved')) {
+                    const ok = confirm('Впевнені, що хочете зняти бронь?');
+                    if (ok) {
+                        myPlace.classList.remove('placeReserved');
+                        totalCash -= Number(myPlace.dataset.price);
+                    }
+                } else {
+                    myPlace.classList.add('placeReserved');
+                    totalCash += Number(myPlace.dataset.price);
+                    updateCash();
+                }
+            };
+
+            myTheatre.appendChild(myPlace);
         }
-    });
-
-    // Оновлення підсумку
-    function updateSummary() {
-        const totalSeats = selectedSeats.length;
-        const totalPrice = selectedSeats.reduce((sum, seat) => sum + seat.price, 0);
-
-        selectedSeatsDisplay.textContent = totalSeats;
-        totalPriceDisplay.textContent = totalPrice;
     }
+    if (theatre) theatre.appendChild(myTheatre);
+};
 
-    // Підтвердження бронювання
-    confirmBooking.addEventListener("click", () => {
-        alert(`Ви забронювали ${selectedSeats.length} місць. Сума: ${totalPriceDisplay.textContent} грн`);
-        location.reload();
-    });
-});
+clearBtn.onclick = function () {
+    if (myTheatre) {
+        myTheatre.remove();
+        myTheatre = null;
+    }
+    totalCash = 0;
+    updateCash();
+};

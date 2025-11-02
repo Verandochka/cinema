@@ -1,65 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cinema Booking</title>
+    <title>Tickets shop</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="app">
-        <!-- Реєстрація -->
-        <section id="registration">
-            <div class="form-container">
-                <h1>Реєстрація</h1>
-                <form id="registrationForm">
-                    <label for="nickname">Введіть ваш нік:</label>
-                    <input type="text" id="nickname" name="nickname" required>
-                    <button type="submit">Продовжити</button>
-                </form>
-            </div>
-        </section>
+    <div class="app">
+        <header class="controls">
+            <div class="inputs">
+                <label for="rows">Rows:</label>
+                <input type="number" max="10" min="1" value="8" id="rows">
 
-        <!-- Вибір фільмів -->
-        <section id="movies" class="hidden">
-            <h1>Оберіть фільм</h1>
-            <div class="movie-list">
-                <div class="movie" data-movie="Фільм 1">
-                    <img src="img/a11437d35e38992b.jpg" alt="Фільм 1">
-                    <h2>Скажене весілля</h2>
-                    <p>Рік: 2018</p>
-                    <p>Режисер: Владислав Климчук</p>
-                    <button class="select-movie">Обрати</button>
-                </div>
-                <div class="movie" data-movie="Фільм 2">
-                    <img src="img/svingeri-2.jpg" alt="Фільм 2">
-                    <h2>Свінгери 2</h2>
-                    <p>Рік: 2019</p>
-                    <p>Режисер: Андрій Екіс</p>
-                    <button class="select-movie">Обрати</button>
-                </div>
-                <div class="movie" data-movie="Фільм 3">
-                    <img src="img/e73d95c5964eb8e9ed9e0ee7a8662975.jpeg" alt="Фільм 3">
-                    <h2>Зірки за обміном</h2>
-                    <p>Рік: 2021</p>
-                    <p>Режисер: Крістофер Нолан</p>
-                    <button class="select-movie">Обрати</button>
-                </div>
-            </div>
-        </section>
+                <label for="cols">Cols:</label>
+                <input type="number" max="10" min="1" value="8" id="cols">
 
-        <!-- Вибір місць -->
-        <section id="seats" class="hidden">
-            <h1>Оберіть місця</h1>
-            <div class="cinema-hall">
+                <button id="build">Build!</button>
+                <button id="clear">Clear!</button>
             </div>
-            <div class="summary">
-                <p>Обрані місця: <span id="selectedSeats">0</span></p>
-                <p>Сума до сплати: <span id="totalPrice">0</span> грн</p>
-                <button id="confirmBooking">Підтвердити</button>
-            </div>
-        </section>
+
+            <div class="cash" id="cash">Каса: <span id="cashValue">0</span>₴</div>
+        </header>
+
+        <main class="main">
+            <div id="theatre" class="theatre"></div>
+            <aside class="legend">
+                <div class="legend-item"><span class="box normal"></span> Звичайне — 100₴</div>
+                <div class="legend-item"><span class="box premium"></span> Останній ряд — 200₴</div>
+                <div class="legend-item"><span class="box reserved"></span> Вибране — підсвічується червоним</div>
+            </aside>
+        </main>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
