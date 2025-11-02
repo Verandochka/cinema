@@ -16,7 +16,7 @@ buildBtn.onclick = function () {
     const rows = parseInt(rowsInput.value, 10) || 8;
     const cols = parseInt(colsInput.value, 10) || 8;
 
-    // Видаляємо попередню залу
+    // Видаляємо попередню залу, якщо є
     if (myTheatre) {
         myTheatre.remove();
         myTheatre = null;
